@@ -226,7 +226,7 @@ int const RCKitStorageVersion = 3;
             RCUserInfo *dbUserInfo = [[RCUserInfo alloc] init];
             dbUserInfo.userId = [resultSet stringForColumn:@"user_id"];
             dbUserInfo.name = [resultSet stringForColumn:@"name"];
-            dbUserInfo.alias = [resultSet stringForColumn:@"alias"];
+//            dbUserInfo.alias = [resultSet stringForColumn:@"alias"];
             dbUserInfo.portraitUri = [resultSet stringForColumn:@"portrait_uri"];
             dbUserInfo.extra = [resultSet stringForColumn:@"extra"];
             [resultSet close];
@@ -248,7 +248,7 @@ int const RCKitStorageVersion = 3;
             RCUserInfo *dbUserInfo = [[RCUserInfo alloc] init];
             dbUserInfo.userId = [resultSet stringForColumn:@"user_id"];
             dbUserInfo.name = [resultSet stringForColumn:@"name"];
-            dbUserInfo.alias = [resultSet stringForColumn:@"alias"];
+//            dbUserInfo.alias = [resultSet stringForColumn:@"alias"];
             dbUserInfo.portraitUri = [resultSet stringForColumn:@"portrait_uri"];
             dbUserInfo.extra = [resultSet stringForColumn:@"extra"];
             [dbUserInfoList addObject:dbUserInfo];
@@ -263,8 +263,8 @@ int const RCKitStorageVersion = 3;
 - (void)replaceUserInfoFromDB:(RCUserInfo *)userInfo forUserId:(NSString *)userId {
     if ([self.workingDB open]) {
         [self.workingDB
-            executeUpdate:@"INSERT OR REPLACE INTO USER_INFO (user_id, name, alias, portrait_uri, extra) VALUES(?, ?, ?, ?, ?)",
-                          userId, userInfo.name, userInfo.alias, userInfo.portraitUri, userInfo.extra ?: @""];
+            executeUpdate:@"INSERT OR REPLACE INTO USER_INFO (user_id, name, alias, portrait_uri, extra) VALUES(?, ?, ?, ?)",
+                          userId, userInfo.name, userInfo.portraitUri, userInfo.extra ?: @""];
     }
 }
 

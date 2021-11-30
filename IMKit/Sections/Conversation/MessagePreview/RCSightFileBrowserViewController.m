@@ -111,9 +111,9 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
         userInfo = [[RCIM sharedRCIM] getUserInfoCache:model.senderUserId];
     }
     NSString *displayName = userInfo.name;
-    if (userInfo.alias.length > 0) {
-        displayName = userInfo.alias;
-    }
+//    if (userInfo.alias.length > 0) {
+//        displayName = userInfo.alias;
+//    }
     NSString *userName = displayName.length > 20
                              ? [NSString stringWithFormat:@"%@...", [displayName substringToIndex:20]]
                              : displayName;

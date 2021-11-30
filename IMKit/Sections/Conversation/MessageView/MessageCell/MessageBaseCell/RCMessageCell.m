@@ -148,7 +148,7 @@ NSString *const KNotificationMessageBaseCellUpdateCanReceiptStatus =
     } else if (ConversationType_GROUP == model.conversationType) {
         RCUserInfo *userInfo = [[RCUserInfoCacheManager sharedManager] getUserInfo:model.senderUserId inGroupId:self.model.targetId];
         RCUserInfo *tempUserInfo = [[RCUserInfoCache sharedCache] getUserInfo:model.senderUserId];
-        userInfo.alias = tempUserInfo.alias;
+//        userInfo.alias = tempUserInfo.alias;
         model.userInfo = userInfo;
         if (userInfo) {
             [self.portraitImageView setImageURL:[NSURL URLWithString:userInfo.portraitUri]];
@@ -611,7 +611,7 @@ NSString *const KNotificationMessageBaseCellUpdateCanReceiptStatus =
             //重新取一下混合的用户信息
             RCUserInfo *userInfo = [[RCUserInfoCacheManager sharedManager] getUserInfo:self.model.senderUserId inGroupId:self.model.targetId];
             RCUserInfo *tempUserInfo = [[RCUserInfoCache sharedCache] getUserInfo:self.model.senderUserId];
-            userInfo.alias = tempUserInfo.alias;
+//            userInfo.alias = tempUserInfo.alias;
             [self updateUserInfoUI:userInfo];
         } else if (self.model.messageDirection == MessageDirection_SEND) {
             [self updateUserInfoUI:userInfoDic[@"userInfo"]];
@@ -633,7 +633,7 @@ NSString *const KNotificationMessageBaseCellUpdateCanReceiptStatus =
             //重新取一下混合的用户信息
             RCUserInfo *userInfo = [[RCUserInfoCacheManager sharedManager] getUserInfo:self.model.senderUserId inGroupId:self.model.targetId];
             RCUserInfo *tempUserInfo = [[RCUserInfoCache sharedCache] getUserInfo:self.model.senderUserId];
-            userInfo.alias = tempUserInfo.alias;
+//            userInfo.alias = tempUserInfo.alias;
             [self updateUserInfoUI:userInfo];
         }
     }

@@ -78,7 +78,7 @@ static NSString *const RCIMKitVersion = @"5.1.6_opensource";
 }
 
 + (void)load{
-    [RCUtilities setModuleName:@"imkit" version:[self getVersion]];
+//    [RCUtilities setModuleName:@"imkit" version:[self getVersion]];
 }
 
 - (void)setCurrentUserInfo:(RCUserInfo *)currentUserInfo {

@@ -1103,16 +1103,14 @@
     } else {
         RCUserInfo *userInfo = [[RCUserInfoCacheManager sharedManager] getUserInfo:operator];
         NSString *operatorName = userInfo.name;
-        if (userInfo.alias.length > 0) {
-            operatorName = userInfo.alias;
-        } else {
+
             if (conversationType == ConversationType_GROUP && targetId.length > 0) {
                 RCUserInfo *groupMemberInfo = [[RCUserInfoCacheManager sharedManager] getUserInfo:operator inGroupId:targetId];
                 if (groupMemberInfo.name.length > 0) {
                     operatorName = groupMemberInfo.name;
                 }
             }
-        }
+
         if (operatorName.length == 0) {
             operatorName= [[NSString alloc] initWithFormat:@"user<%@>", operator];
         }
@@ -1139,16 +1137,14 @@
     } else {
         RCUserInfo *userInfo = [[RCUserInfoCacheManager sharedManager] getUserInfo:operator];
         NSString *operatorName = userInfo.name;
-        if (userInfo.alias.length > 0) {
-            operatorName = userInfo.alias;
-        } else {
+
             if (conversationType == ConversationType_GROUP && targetId.length > 0) {
                 RCUserInfo *groupMemberInfo = [[RCUserInfoCacheManager sharedManager] getUserInfo:operator inGroupId:targetId];
                 if (groupMemberInfo.name.length > 0) {
                     operatorName = groupMemberInfo.name;
                 }
             }
-        }
+
         
         if (operatorName.length == 0) {
             operatorName= [[NSString alloc] initWithFormat:@"user<%@>", operator];
@@ -1209,9 +1205,6 @@
 }
 
 + (NSString *)getDisplayName:(RCUserInfo *)userInfo {
-    if (userInfo.alias.length > 0) {
-        return userInfo.alias;
-    }
     return userInfo.name;
 }
 @end

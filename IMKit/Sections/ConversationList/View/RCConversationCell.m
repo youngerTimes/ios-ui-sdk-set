@@ -198,11 +198,11 @@
                 RCUserInfo *memberInfo = [[RCUserInfoCacheManager sharedManager] getUserInfo:model.senderUserId inGroupId:model.targetId];
                 RCUserInfo *userInfo = [[RCUserInfoCache sharedCache] getUserInfo:model.senderUserId];
                 NSString *displayName = userInfo.name;
-                if (userInfo.alias.length > 0) {
-                    displayName = userInfo.alias;
-                } else if (memberInfo.name.length > 0) {
+//                if (userInfo.alias.length > 0) {
+//                    displayName = userInfo.alias;
+//                } else if (memberInfo.name.length > 0) {
                     displayName = memberInfo.name;
-                }
+//                }
                 [self.detailContentView updateContent:model prefixName:displayName];
             }
         } else if (model.conversationType == ConversationType_DISCUSSION) {
@@ -324,11 +324,11 @@
             RCUserInfo *memberInfo = [[RCUserInfoCacheManager sharedManager] getUserInfo:self.model.senderUserId inGroupId:self.model.targetId];
             RCUserInfo *userInfo = [[RCUserInfoCache sharedCache] getUserInfo:self.model.senderUserId];
             NSString *displayName = userInfo.name;
-            if (userInfo.alias.length > 0) {
-                displayName = userInfo.alias;
-            } else if (memberInfo.name.length > 0) {
+//            if (userInfo.alias.length > 0) {
+//                displayName = userInfo.alias;
+//            } else if (memberInfo.name.length > 0) {
                 displayName = memberInfo.name;
-            }
+//            }
             [self.detailContentView updateContent:self.model prefixName:displayName];
         }
     }
@@ -361,11 +361,11 @@
                     RCUserInfo *userInfo = [[RCUserInfoCacheManager sharedManager] getUserInfo:self.model.senderUserId
                                                                                      inGroupId:self.model.targetId];
                     NSString *name = updateUserInfo.name;
-                    if (updateUserInfo.alias.length > 0) {
-                        name = updateUserInfo.alias;
-                    } else if (userInfo.name.length > 0) {
+//                    if (updateUserInfo.alias.length > 0) {
+//                        name = updateUserInfo.alias;
+//                    } else if (userInfo.name.length > 0) {
                         name = userInfo.name;
-                    }
+//                    }
                     [self.detailContentView updateContent:self.model prefixName:name];
                 }
             } else if ([updateUserId isEqualToString:self.model.senderUserId] &&
@@ -399,11 +399,11 @@
                 RCUserInfo *memberInfo = [[RCUserInfoCacheManager sharedManager] getUserInfo:self.model.senderUserId inGroupId:self.model.targetId];
                 RCUserInfo *userInfo = [[RCUserInfoCache sharedCache] getUserInfo:self.model.senderUserId];
                 NSString *displayName = userInfo.name;
-                if (userInfo.alias.length > 0) {
-                    displayName = userInfo.alias;
-                } else if (memberInfo.name.length > 0) {
+//                if (userInfo.alias.length > 0) {
+//                    displayName = userInfo.alias;
+//                } else if (memberInfo.name.length > 0) {
                     displayName = memberInfo.name;
-                }
+//                }
                 [self.detailContentView updateContent:self.model prefixName:displayName];
             }
         }
