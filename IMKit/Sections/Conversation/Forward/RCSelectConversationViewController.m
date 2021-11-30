@@ -125,7 +125,8 @@ typedef void (^CompleteBlock)(NSArray *conversationList);
                                          style:UIBarButtonItemStylePlain
                                         target:self
                                         action:@selector(onLeftButtonClick:)];
-    leftBarItem.tintColor = RCKitConfigCenter.ui.globalNavigationBarTintColor;
+//    leftBarItem.tintColor = RCKitConfigCenter.ui.globalNavigationBarTintColor; //【源码修改】
+    leftBarItem.tintColor = UIColor.blackColor;
     self.navigationItem.leftBarButtonItem = leftBarItem;
 
     self.rightBarButtonItem =
@@ -133,10 +134,22 @@ typedef void (^CompleteBlock)(NSArray *conversationList);
                                          style:UIBarButtonItemStylePlain
                                         target:self
                                         action:@selector(onRightButtonClick:)];
-    self.rightBarButtonItem.tintColor = RCKitConfigCenter.ui.globalNavigationBarTintColor;
+//    self.rightBarButtonItem.tintColor = RCKitConfigCenter.ui.globalNavigationBarTintColor; //【源码修改】
+    self.rightBarButtonItem.tintColor = UIColor.blackColor;
     self.navigationItem.rightBarButtonItem = self.rightBarButtonItem;
 
     [self updateRightButton];
+
+    self.navigationController.navigationBar.tintColor = UIColor.blackColor;
+
+    if (@available(iOS 13.0, *)) {
+        UINavigationBarAppearance *appperance = [[UINavigationBarAppearance alloc]init];
+        self.navigationController.navigationBar.standardAppearance = appperance;
+        self.navigationController.navigationBar.scrollEdgeAppearance = appperance;
+        self.navigationController.navigationBar.titleTextAttributes = @{NSFontAttributeName:[UIFont systemFontOfSize:18 weight:UIFontWeightBold]};
+    } else {
+
+    }
 }
 
 - (void)updateRightButton {
@@ -152,7 +165,7 @@ typedef void (^CompleteBlock)(NSArray *conversationList);
         if (homeBarHeight > 0) {
             navBarHeight = 88;
         }
-        _conversationTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height - navBarHeight - homeBarHeight) style:(UITableViewStyleGrouped)];
+        _conversationTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, navBarHeight, self.view.frame.size.width, self.view.frame.size.height) style:(UITableViewStyleGrouped)];
         _conversationTableView.estimatedRowHeight = 0;
         _conversationTableView.estimatedSectionHeaderHeight = 0;
         _conversationTableView.estimatedSectionFooterHeight = 0;

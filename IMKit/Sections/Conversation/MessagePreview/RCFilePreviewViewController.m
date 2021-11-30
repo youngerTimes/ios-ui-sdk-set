@@ -40,8 +40,19 @@ extern NSString *const RCKitDispatchDownloadMediaNotification;
     self.edgesForExtendedLayout = UIRectEdgeNone;
 
     [self registerNotificationCenter];
-    
+
     [self setNavigationItems];
+
+    if (@available(iOS 13.0, *)) {
+        UINavigationBarAppearance *appearance = [UINavigationBarAppearance new];
+        [appearance configureWithOpaqueBackground];
+        appearance.backgroundColor = UIColor.whiteColor;
+        appearance.titleTextAttributes = @{NSFontAttributeName:[UIFont systemFontOfSize:21 weight:UIFontWeightMedium]};
+        self.navigationController.navigationBar.standardAppearance = appearance;
+        self.navigationController.navigationBar.scrollEdgeAppearance = appearance;
+    } else {
+
+    }
 
     if ([self isFileDownloaded] && [self isFileSupported]) {
         [self layoutAndPreviewFile];
@@ -159,7 +170,7 @@ extern NSString *const RCKitDispatchDownloadMediaNotification;
     self.openInOtherAppButton.hidden = YES;
     self.cancelButton.hidden = NO;
 
-    
+
     self.progressLabel.hidden = NO;
 }
 
@@ -202,7 +213,7 @@ extern NSString *const RCKitDispatchDownloadMediaNotification;
     [RCActionSheetView showActionSheetView:nil cellArray:@[RCLocalizedString(@"OpenFileInOtherApp")] cancelTitle:RCLocalizedString(@"Cancel") selectedBlock:^(NSInteger index) {
         [self openInOtherApp:self.fileMessage.localPath];
     } cancelBlock:^{
-            
+
     }];
 }
 
@@ -316,13 +327,13 @@ extern NSString *const RCKitDispatchDownloadMediaNotification;
 - (void)setNavigationItems {
     //设置右键
     UIButton *rightBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 17.5, 17.5)];
-    UIImage *rightImage = RCResourceImage(@"forwardIcon");
+    UIImage *rightImage = [UIImage imageNamed:@"btn_more"];
     [rightBtn setImage:rightImage forState:UIControlStateNormal];
     [rightBtn addTarget:self action:@selector(moreAction) forControlEvents:UIControlEventTouchUpInside];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:rightBtn];
 
     //设置左键
-    self.navigationItem.leftBarButtonItems = [RCKitUtility getLeftNavigationItems:RCResourceImage(@"navigator_btn_back") title:RCLocalizedString(@"Back") target:self action:@selector(clickBackBtn:)];
+    self.navigationItem.leftBarButtonItems = [RCKitUtility getLeftNavigationItems:[UIImage imageNamed:@"icon_back"] title:RCLocalizedString(@"Back") target:self action:@selector(clickBackBtn:)];
 }
 
 #pragma mark - Getters and Setters

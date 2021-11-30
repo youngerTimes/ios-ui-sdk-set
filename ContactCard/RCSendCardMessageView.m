@@ -175,7 +175,7 @@ NSString *const RCCC_CardMessageSend = @"RCCC_CardMessageSend";
     [_sendButton addTarget:self action:@selector(clickSendBtn) forControlEvents:UIControlEventTouchUpInside];
     _sendButton.translatesAutoresizingMaskIntoConstraints = NO;
     [_contentView addSubview:_sendButton];
-    
+
     _arrow = [UIImageView new];
     [_arrow setImage:RCResourceImage(@"right_arrow")];
     _arrow.translatesAutoresizingMaskIntoConstraints = NO;
@@ -303,36 +303,36 @@ NSString *const RCCC_CardMessageSend = @"RCCC_CardMessageSend";
     RCUserInfo *currentUserInfo = [RCIM sharedRCIM].currentUserInfo;
     cardMessage.sendUserId = currentUserInfo.userId;
     cardMessage.sendUserName = currentUserInfo.name;
-    RCMessage *message = [[RCMessage alloc] initWithType:_conversationType targetId:_targetId direction:MessageDirection_SEND content:cardMessage];
-    NSString *tail = [NSString stringWithFormat:RCLocalizedString(@"RecommendedToYou"), _cardUserInfo.name];
-    NSString *pushTitle = @"";
     NSString *pushContent = nil;
+    NSString *tail = [NSString
+        stringWithFormat:RCLocalizedString(@"RecommendedToYou"), _cardUserInfo.name];
     if (_conversationType == ConversationType_GROUP) {
-        pushTitle = _groupInfo.groupName;
-        pushContent = [NSString stringWithFormat:@"%@%@", cardMessage.sendUserName, tail];
+        pushContent = [NSString stringWithFormat:@"%@(%@)%@", cardMessage.sendUserName, _groupInfo.groupName, tail];
     } else {
-        pushTitle = cardMessage.sendUserName;
-        pushContent = [NSString stringWithFormat:@"%@", tail];
+        pushContent = [NSString stringWithFormat:@"%@%@", cardMessage.sendUserName, tail];
     }
-    message.messagePushConfig.pushTitle = pushTitle;
-    message.messagePushConfig.pushContent = pushContent;
-    
     if (self.destructDuration > 0) {
         cardMessage.destructDuration = self.destructDuration;
     }
     __weak typeof(self) ws = self;
-    [[RCIM sharedRCIM] sendMessage:message pushContent:nil pushData:nil successBlock:^(RCMessage *successMessage) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [ws performSelector:@selector(sendTextMessageIfNeed) withObject:nil afterDelay:0.2];
-        });
-        [ws dealWithWhenSendComplete];
-    } errorBlock:^(RCErrorCode nErrorCode, RCMessage *errorMessage) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [ws performSelector:@selector(sendTextMessageIfNeed) withObject:nil afterDelay:0.2];
-        });
-        [ws gotoConversationVC];
-        [ws dealWithWhenSendComplete];
-    }];
+    [[RCIM sharedRCIM] sendMessage:_conversationType
+        targetId:_targetId
+        content:cardMessage
+        pushContent:pushContent
+        pushData:nil
+        success:^(long messageId) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [ws performSelector:@selector(sendTextMessageIfNeed) withObject:nil afterDelay:0.2];
+            });
+            [ws dealWithWhenSendComplete];
+        }
+        error:^(RCErrorCode nErrorCode, long messageId) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [ws performSelector:@selector(sendTextMessageIfNeed) withObject:nil afterDelay:0.2];
+            });
+            [ws gotoConversationVC];
+            [ws dealWithWhenSendComplete];
+        }];
 }
 
 - (void)dealWithWhenSendComplete {
@@ -441,9 +441,14 @@ NSString *const RCCC_CardMessageSend = @"RCCC_CardMessageSend";
 
 - (void)setTargetgroupInfo:(RCCCGroupInfo *)targetgroupInfo {
     self.groupInfo = targetgroupInfo;
+    //-----
+    //【源码修改】
+//    self.nicknameLabel.text =
+//        [NSString stringWithFormat:@"%@ (%@%@)", targetgroupInfo.groupName, targetgroupInfo.number,
+//                                   RCLocalizedString(@"Person")];
     self.nicknameLabel.text =
-        [NSString stringWithFormat:@"%@ (%@%@)", targetgroupInfo.groupName, targetgroupInfo.number,
-                                   RCLocalizedString(@"Person")];
+        [NSString stringWithFormat:@"%@", targetgroupInfo.groupName];
+    //-----
     [_portraitView setImageURL:[NSURL URLWithString:targetgroupInfo.portraitUri]];
     self.conversationType = ConversationType_GROUP;
     self.targetId = targetgroupInfo.groupId;

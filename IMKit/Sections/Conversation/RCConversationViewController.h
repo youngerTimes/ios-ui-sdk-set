@@ -202,7 +202,7 @@ typedef NS_ENUM(NSUInteger, RCCustomerServiceStatus) {
 
 /*!
  输入工具栏占位文本 label，默认为 nil，不显示占位
- 
+
  在会话页面的 viewDidLoad 写如下代码即可
  self.placeholderLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 10, 180, 20)];
  self.placeholderLabel.text = @"测试 Placeholder";
@@ -370,7 +370,6 @@ typedef NS_ENUM(NSUInteger, RCCustomerServiceStatus) {
  重写此函数，在此函数中取消掉您的上传，并调用uploadListener的cancelBlock告诉融云SDK该发送已经取消。目前仅支持文件消息的取消
  */
 - (void)cancelUploadMedia:(RCMessageModel *)model;
-
 /*!
  重新发送消息
 
@@ -378,19 +377,8 @@ typedef NS_ENUM(NSUInteger, RCCustomerServiceStatus) {
 
  @discussion 发送消息失败，点击小红点时，会将本地存储的原消息实体删除，回调此接口将消息内容重新发送。
  如果您需要重写此接口，请注意调用super。
- 因 UI 逻辑修改为将原消息移动到会话页面最下方，不删除原消息直接重新发送原消息，但是此方法会重新生成消息发送，故废弃。
  */
-- (void)resendMessage:(RCMessageContent *)messageContent __deprecated_msg("已废弃，请使用 resendMessageWithModel");
-
-/*!
- 重新发送消息
-
- @param model 消息的 Model
-
- @discussion 发送消息失败，点击小红点时，会将原消息移动到会话页面最下方，不删除原消息，直接重新发送该消息。
- 如果您需要重写此接口，请注意调用 super。
- */
-- (void)resendMessageWithModel:(RCMessageModel *)model;
+- (void)resendMessage:(RCMessageContent *)messageContent;
 
 #pragma mark 插入消息
 /*!
@@ -409,9 +397,6 @@ typedef NS_ENUM(NSUInteger, RCCustomerServiceStatus) {
  删除消息并更新UI
 
  @param model 消息Cell的数据模型
- @discussion 会话页面只删除本地消息，如果需要删除远端历史消息，需要
-    1.重写该方法，并调用 super 删除本地消息
-    2.调用删除远端消息接口，删除远端消息
  */
 - (void)deleteMessage:(RCMessageModel *)model;
 
@@ -444,15 +429,7 @@ typedef NS_ENUM(NSUInteger, RCCustomerServiceStatus) {
  @param status          发送状态，0表示成功，非0表示失败
  @param messageContent   消息内容
  */
-- (void)didSendMessage:(NSInteger)status content:(RCMessageContent *)messageContent __deprecated_msg("已废弃，请使用 - (void)didSendMessageModel:(NSInteger)status model:(RCMessageModel *)messageModel");
-
-/*!
- 发送消息完成的回调
-
- @param status          发送状态，0表示成功，非0表示失败
- @param messageContent   消息内容
- */
-- (void)didSendMessageModel:(NSInteger)status model:(RCMessageModel *)messageModel;
+- (void)didSendMessage:(NSInteger)status content:(RCMessageContent *)messageContent;
 
 /*!
  取消了消息发送的回调
@@ -508,7 +485,7 @@ typedef NS_ENUM(NSUInteger, RCCustomerServiceStatus) {
 
  @discussion
  你需要在cell中重写RCMessageBaseCell基类的sizeForMessageModel:withCollectionViewWidth:referenceExtraHeight:来计算cell的高度。
- 
+
  @discussion 如果有自定义消息，在会话页面子类 viewDidLoad 方法中需优先注册自定义消息的 cell, 再做其他操作
  */
 - (void)registerClass:(Class)cellClass forMessageClass:(Class)messageClass;
@@ -568,6 +545,11 @@ typedef NS_ENUM(NSUInteger, RCCustomerServiceStatus) {
  */
 - (void)didLongTouchMessageCell:(RCMessageModel *)model inView:(UIView *)view;
 
+
+/// 收藏
+-(void)didOnCollectMessage:(RCMessageModel*)messageModel;
+
+-(void)didOnForwardMessage:(RCMessageModel*)messageModel;
 /*!
  获取长按Cell中的消息时的菜单
 

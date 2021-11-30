@@ -232,7 +232,7 @@
 
 #pragma mark - Private Methods
 - (void)setNav {
-    self.navigationItem.leftBarButtonItems = [RCKitUtility getLeftNavigationItems:RCResourceImage(@"navigator_btn_back") title:RCLocalizedString(@"Back") target:self action:@selector(clickBackBtn:)];
+    self.navigationItem.leftBarButtonItems = [RCKitUtility getLeftNavigationItems:[UIImage imageNamed:@"icon_back"] title:RCLocalizedString(@"Back") target:self action:@selector(clickBackBtn:)];
     self.navigationItem.title = self.navTitle;
 }
 

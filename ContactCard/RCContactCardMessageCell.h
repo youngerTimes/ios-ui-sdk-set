@@ -13,7 +13,7 @@
 #endif
 
 /**
- *  名片消息cell
+ * 名片消息cell
  */
 @interface RCContactCardMessageCell : RCMessageCell
 
@@ -26,6 +26,9 @@
  *  头像
  */
 @property (nonatomic, strong) RCloudImageView *portraitView;
+
+//ID
+@property (nonatomic,strong)UILabel *idNumL;//【源码修改】
 
 // size of cell
 + (CGSize)sizeOfMessageCell;
