@@ -611,7 +611,9 @@ static BOOL msgRoamingServiceAvailable = YES;
                 if (rcMessage.messageDirection == MessageDirection_SEND) {
                     [__blockSelf.appendMessageQueue addOperationWithBlock:^{
                         dispatch_async(dispatch_get_main_queue(), ^{
-                            [__blockSelf.chatVC updateForMessageSendSuccess:rcMessage];
+                            if ([__blockSelf.chatVC respondsToSelector:NSSelectorFromString(@"updateForMessageSendSuccess")]){
+                                [__blockSelf.chatVC updateForMessageSendSuccess:rcMessage];
+                            }
                         });
                     }];
                 }
