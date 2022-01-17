@@ -163,16 +163,16 @@ static BOOL msgRoamingServiceAvailable = YES;
                     dataRepositorycount = 0;
                 }
                 [chatVC.conversationDataRepository addObjectsFromArray:ws.reloadMessages];
-            
+
                 NSMutableArray *reloadIndexPaths = [NSMutableArray new];
                 for (int i=0 ; i<ws.reloadMessages.count ; i++) {
                     NSIndexPath *indexPath = [NSIndexPath indexPathForItem:(dataRepositorycount + i) inSection:0];
                     [reloadIndexPaths addObject:indexPath];
                 }
-            
+
                 [chatVC.conversationMessageCollectionView insertItemsAtIndexPaths:reloadIndexPaths];
                 [ws.reloadMessages removeAllObjects];
-       
+
                 if (chatVC.sendMsgAndNeedScrollToBottom || [ws isAtTheBottomOfTableView]) {
                     [chatVC scrollToBottomAnimated:YES];
                     chatVC.sendMsgAndNeedScrollToBottom = NO;
@@ -183,7 +183,7 @@ static BOOL msgRoamingServiceAvailable = YES;
                         [chatVC updateUnreadMsgCountLabel];
                     }
                 }
-          
+
         }];
     }
     return _throttleReloadAction;
@@ -250,11 +250,18 @@ static BOOL msgRoamingServiceAvailable = YES;
         beforeCount = 15;
         afterCount = 15;
     }
-    NSArray *__messageArray = [[RCIMClient sharedRCIMClient] getHistoryMessages:self.chatVC.conversationType
-                                                                       targetId:self.chatVC.targetId
-                                                                       sentTime:self.chatVC.locatedMessageSentTime
-                                                                    beforeCount:beforeCount
-                                                                     afterCount:afterCount];
+    //=======【源码修改】================
+    NSArray *__messageArray = [[RCChannelClient sharedChannelManager]
+                               getHistoryMessages:self.chatVC.conversationType
+                               targetId:self.chatVC.targetId
+                               channelId:[RCIM sharedRCIM].getCurrentChannelId sentTime:self.chatVC.locatedMessageSentTime beforeCount:beforeCount afterCount:afterCount];
+
+//    NSArray *__messageArray = [[RCIMClient sharedRCIMClient] getHistoryMessages:self.chatVC.conversationType
+//                                                                       targetId:self.chatVC.targetId
+//                                                                       sentTime:self.chatVC.locatedMessageSentTime
+//                                                                    beforeCount:beforeCount
+//                                                                     afterCount:afterCount];
+    //=======【源码修改】================
     [self.chatVC.util sendReadReceiptResponseForMessages:__messageArray];
 
     // 1.如果 self.locatedMessageSentTime == 0,
@@ -318,9 +325,9 @@ static BOOL msgRoamingServiceAvailable = YES;
 
 - (void)loadMoreHistoryMessage {
     msgRoamingServiceAvailable = YES;
-    
+
     NSArray *__messageArray = [self loadMoreLocalMessage];
-    
+
     if (__messageArray.count == 0 && self.loadHistoryMessageFromRemote && msgRoamingServiceAvailable &&
         self.chatVC.conversationType != ConversationType_CHATROOM) {
         [self loadRemoteHistoryMessages];
@@ -339,11 +346,15 @@ static BOOL msgRoamingServiceAvailable = YES;
             }
         }
     }
-    
-    NSArray *__messageArray = [[RCIMClient sharedRCIMClient] getHistoryMessages:self.chatVC.conversationType
-                                                                       targetId:self.chatVC.targetId
-                                                                oldestMessageId:lastMessageId
-                                                                          count:self.chatVC.defaultLocalHistoryMessageCount];
+    //=======【源码修改】================
+    NSArray *__messageArray = [[RCChannelClient sharedChannelManager] getHistoryMessages:self.chatVC.conversationType targetId:self.chatVC.targetId channelId:[RCIM sharedRCIM].getCurrentChannelId oldestMessageId:lastMessageId count:self.chatVC.defaultLocalHistoryMessageCount];
+
+//    NSArray *__messageArray = [[RCIMClient sharedRCIMClient] getHistoryMessages:self.chatVC.conversationType
+//                                                                       targetId:self.chatVC.targetId
+//                                                                oldestMessageId:lastMessageId
+//                                                                          count:self.chatVC.defaultLocalHistoryMessageCount];
+
+    //=======【源码修改】================
     [self.chatVC.util sendReadReceiptResponseForMessages:__messageArray];
     if (__messageArray.count > 0) {
         [self handleMessagesAfterLoadMore:__messageArray];
@@ -378,7 +389,7 @@ static BOOL msgRoamingServiceAvailable = YES;
         self.isIndicatorLoading = NO;
         return;
     }
-    
+
     RCRemoteHistoryMsgOption *option = [RCRemoteHistoryMsgOption new];
     option.recordTime = self.recordTime;
     option.count = self.chatVC.defaultRemoteHistoryMessageCount;
@@ -710,7 +721,7 @@ static BOOL msgRoamingServiceAvailable = YES;
                 break;
             }
         }
-        
+
         if (self.firstUnreadMessage) {
             self.firstUnreadMessage = recalledMsg;
 
@@ -746,7 +757,7 @@ static BOOL msgRoamingServiceAvailable = YES;
                 break;
             }
         }
-        
+
         if(index >= 0) {
             RCMessage *newMsg = [[RCIMClient sharedRCIMClient] getMessage:recalledMsgId];
             if(newMsg) {
@@ -758,8 +769,8 @@ static BOOL msgRoamingServiceAvailable = YES;
             return;
         }
     }
-    
-    
+
+
     for (int i = 0; i < self.chatVC.conversationDataRepository.count; i++) {
         msgModel = [self.chatVC.conversationDataRepository objectAtIndex:i];
         if (msgModel.messageId == recalledMsgId &&
@@ -931,7 +942,7 @@ static BOOL msgRoamingServiceAvailable = YES;
                                                            atScrollPosition:UICollectionViewScrollPositionTop
                                                                    animated:YES];
         }
-        
+
     }
 }
 
@@ -944,7 +955,7 @@ static BOOL msgRoamingServiceAvailable = YES;
                 self.chatVC.unReadMentionedButton.hidden = NO;
                 NSString *unReadMentionedMessagesCount = [NSString stringWithFormat:@"%ld", (long)self.unreadMentionedMessages.count];
                 NSString *stringUnReadMentioned = [NSString stringWithFormat:NSLocalizedStringFromTable(@"HaveMentionedMeCount", @"RongCloudKit", nil), unReadMentionedMessagesCount];
-                
+
                 self.chatVC.unReadMentionedLabel.text = stringUnReadMentioned;
                 [self.chatVC.util adaptUnreadButtonSize:self.chatVC.unReadMentionedLabel];
             }
@@ -961,7 +972,7 @@ static BOOL msgRoamingServiceAvailable = YES;
     if (self.unreadMentionedMessages.count <= 0) {
         return;
     }
-    
+
     RCMessage *firstUnReadMentionedMessagge = [self.unreadMentionedMessages firstObject];
     [self getSpecifiedPositionMessage:firstUnReadMentionedMessagge ifUnReadMentionedButton:YES];
     [self.unreadMentionedMessages removeObject:firstUnReadMentionedMessagge];

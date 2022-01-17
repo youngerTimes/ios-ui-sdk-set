@@ -158,7 +158,12 @@ NSString *const KNotificationMessageBaseCellUpdateCanReceiptStatus =
             [self.nicknameLabel setText:nil];
         }
     } else {
-        RCUserInfo *userInfo = [[RCUserInfoCacheManager sharedManager] getUserInfo:model.senderUserId];
+        NSString *senderUserId = model.senderUserId;
+        if ([model.channelId isEqualToString:@"1"]) {
+            senderUserId = [model.senderUserId stringByAppendingString:@"_1"];
+        }
+
+        RCUserInfo *userInfo = [[RCUserInfoCacheManager sharedManager] getUserInfo:senderUserId];
         model.userInfo = userInfo;
         if (userInfo) {
             if (model.conversationType != ConversationType_Encrypted) {
@@ -281,11 +286,11 @@ NSString *const KNotificationMessageBaseCellUpdateCanReceiptStatus =
     [self.baseContentView addSubview:self.nicknameLabel];
     [self.baseContentView addSubview:self.messageContentView];
     [self.baseContentView addSubview:self.statusContentView];
-    
+
     [self.messageContentView addSubview:self.destructView];
-    
+
     [self.destructView addSubview:self.destructBtn];
-    
+
     [self.statusContentView addSubview:self.messageFailedStatusView];
     [self.statusContentView addSubview:self.messageActivityIndicatorView];
     self.messageActivityIndicatorView.hidden = YES;
@@ -310,9 +315,9 @@ NSString *const KNotificationMessageBaseCellUpdateCanReceiptStatus =
                                              selector:@selector(onReceiptStatusUpdate:)
                                                  name:KNotificationMessageBaseCellUpdateCanReceiptStatus
                                                object:nil];
-    
+
     [self registerUpdateLayoutIfNeed];
-    
+
 }
 
 - (void)registerUpdateLayoutIfNeed{
@@ -364,7 +369,7 @@ NSString *const KNotificationMessageBaseCellUpdateCanReceiptStatus =
             }
         }
     }];
-    
+
     [self.messageContentView registerSizeChangedEvent:^(CGSize size) {
         if (weakSelf.model){
             CGRect rect = CGRectMake(0, 0, size.width, size.height);
@@ -547,7 +552,7 @@ NSString *const KNotificationMessageBaseCellUpdateCanReceiptStatus =
                 [self updateStatusContentView:self.model];
             }
         } else if ([notifyModel.actionName isEqualToString:CONVERSATION_CELL_STATUS_SEND_PROGRESS]) {
-            
+
         } else if ([notifyModel.actionName isEqualToString:CONVERSATION_CELL_STATUS_SEND_HASREAD] &&
                    [RCKitConfigCenter.message.enabledReadReceiptConversationTypeList containsObject:@(self.model.conversationType)] &&
                    (self.model.conversationType == ConversationType_PRIVATE ||

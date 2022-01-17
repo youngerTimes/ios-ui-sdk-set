@@ -164,8 +164,8 @@
     [self setDraft:self.inputTextView.text];
 }
 
-- (void)addMentionedUser:(RCUserInfo *)userInfo {
-    [self insertMentionedUser:userInfo symbolRequset:YES];
+- (void)addMentionedUser:(RCUserInfo *)userInfo Symbol:(Boolean)symbolRequset {
+    [self insertMentionedUser:userInfo symbolRequset:symbolRequset];
 }
 
 - (void)pluginBoardView:(RCPluginBoardView *)pluginBoardView clickedItemWithTag:(NSInteger)tag {
@@ -508,14 +508,14 @@
             if ([self.inputTextView.delegate respondsToSelector:@selector(textView:shouldChangeTextInRange:replacementText:)]) {
                 [self.inputTextView.delegate textView:self.inputTextView shouldChangeTextInRange:self.inputTextView.selectedRange replacementText:string];
             }
-            
+
             NSRange range;
             range.location = self.inputTextView.selectedRange.location + string.length;
             range.length = 0;
             self.inputTextView.selectedRange = range;
         }
     }
-    
+
     UITextView *textView = self.inputTextView;
     CGRect line = [textView caretRectForPosition:textView.selectedTextRange.start];
     CGFloat overflow =
@@ -535,7 +535,7 @@
         }];
     }
     [self enableEmojiBoardViewSendButton];
-   
+
     if ([self.delegate respondsToSelector:@selector(emojiView:didTouchedEmoji:)]) {
         [self.delegate emojiView:emojiView didTouchedEmoji:string];
     }
@@ -691,7 +691,7 @@
             return;
         }
     }
-    
+
     //textViewBeginEditing 是在 inputTextView 代理 textViewShouldBeginEditing 中赋值
     //此判断是避免会话页面其他输入框的响应导致会话输入框弹起
     if (self.inputContainerView.textViewBeginEditing) {
@@ -701,13 +701,13 @@
         if (!CGRectEqualToRect(keyboardBeginFrame, keyboardEndFrame)) {
             UIViewAnimationCurve animationCurve = [userInfo[UIKeyboardAnimationCurveUserInfoKey] integerValue];
             NSInteger animationCurveOption = (animationCurve << 16);
-            
+
             double animationDuration = [userInfo[UIKeyboardAnimationDurationUserInfoKey] doubleValue];
             [UIView animateWithDuration:animationDuration delay:0.0 options:animationCurveOption animations:^{
                 self.keyboardFrame = keyboardEndFrame;
                 [self animationLayoutBottomBarWithStatus:KBottomBarKeyboardStatus animated:NO];
             }completion:^(BOOL finished){
-                
+
             }];
         }
     }
@@ -1024,7 +1024,7 @@
             [self openSystemAlbum];
         }
     } cancelBlock:^{
-            
+
     }];
 }
 
@@ -1092,7 +1092,7 @@
             [self hiddenEmojiBoardView:YES pluginBoardView:YES commonPhrasesListView:YES];
             chatInputBarRect.origin.y = bottomY - self.bounds.size.height;
         } break;
-            
+
         case KBottomBarCommonPhrasesStatus: {
             if (self.commonPhrasesSource.count <= 0 || (self.conversationType != ConversationType_PRIVATE && self.conversationType != ConversationType_GROUP)) {
                 RCLogI(@"Common Phrases Donot Support");
@@ -1106,7 +1106,7 @@
             break;
     }
     [self setFrame:chatInputBarRect];
-    
+
     [[RCExtensionService sharedService] inputBarStatusDidChange:bottomBarStatus inInputBar:self];
 }
 
@@ -1326,13 +1326,13 @@
                                title:RCLocalizedString(@"Photos")
                              atIndex:0
                                  tag:PLUGIN_BOARD_ITEM_ALBUM_TAG];
-        
+
         [_pluginBoardView insertItem:RCResourceImage(@"plugin_item_camera")
                     highlightedImage:RCResourceImage(@"plugin_item_camera_highlighted")
                                title:RCLocalizedString(@"Camera")
                              atIndex:1
                                  tag:PLUGIN_BOARD_ITEM_CAMERA_TAG];
-        
+
         [_pluginBoardView insertItem:RCResourceImage(@"plugin_item_location")
                     highlightedImage:RCResourceImage(@"plugin_item_location_highlighted")
                                title:RCLocalizedString(@"Location")

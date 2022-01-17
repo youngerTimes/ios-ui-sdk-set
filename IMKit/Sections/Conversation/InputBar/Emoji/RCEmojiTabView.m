@@ -69,7 +69,7 @@
 
 #pragma mark - UICollectionViewDelegate && UICollectionViewDataSource
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return self.emotionsListData.count;
+    return 1;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
@@ -82,11 +82,11 @@
     UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(12, 8, cell.contentView.frame.size.width-24, cell.contentView.frame.size.height-16)];
     imageView.image = self.emotionsListData[indexPath.row];
     [cell.contentView addSubview:imageView];
-    
+
     if (self.currentIndex == indexPath.row) {
         cell.contentView.backgroundColor = RCDYCOLOR(0xf5f6f9, 0x1c1c1c);
     }else{
-        cell.contentView.backgroundColor = [UIColor clearColor];
+        cell.contentView.backgroundColor = RCDYCOLOR(0xf5f6f9, 0x1c1c1c);
     }
     return cell;
 }
@@ -205,7 +205,7 @@
         _emotionsListView.delegate = self;
         _emotionsListView.dataSource = self;
         _emotionsListView.scrollEnabled = YES;
-        _emotionsListView.backgroundColor = RCDYCOLOR(0xffffff, 0x000000);
+        _emotionsListView.backgroundColor = UIColor.clearColor;
         [_emotionsListView registerClass:[UICollectionViewCell class]
                          forCellWithReuseIdentifier:RCEmotionCollectCellIdentifier];
     }

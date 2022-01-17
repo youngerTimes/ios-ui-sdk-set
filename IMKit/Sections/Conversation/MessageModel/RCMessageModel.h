@@ -14,6 +14,8 @@
  */
 @interface RCMessageModel : NSObject
 
+@property (nonatomic,copy) NSString * channelId;
+
 /*!
  是否显示时间
  */
@@ -121,7 +123,7 @@
 
 /*!
  消息是否可以包含扩展信息
- 
+
  @discussion 该属性在消息发送时确定，发送之后不能再做修改
  @discussion 扩展信息只支持单聊和群组，其它会话类型不能设置扩展信息
 */
@@ -129,7 +131,7 @@
 
 /*!
  消息扩展信息列表
- 
+
  @discussion 扩展信息只支持单聊和群组，其它会话类型不能设置扩展信息
 */
 @property (nonatomic, strong) NSDictionary<NSString *, NSString *> *expansionDic;

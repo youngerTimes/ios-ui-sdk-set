@@ -41,6 +41,7 @@ NSString *const RCKitDispatchConversationStatusChangeNotification =
 @interface RCIM () <RCIMClientReceiveMessageDelegate, RCConnectionStatusChangeDelegate, RCMessageDestructDelegate,
                     RCConversationStatusChangeDelegate>
 @property (nonatomic, copy) NSString *appKey;
+@property (nonatomic, copy) NSString *channelId;
 @property (nonatomic, strong) NSDate *notificationQuietBeginTime;
 @property (nonatomic, strong) NSDate *notificationQuietEndTime;
 @property (nonatomic, assign) BOOL hasNotifydExtensionModuleUserId;
@@ -98,6 +99,14 @@ static NSString *const RCIMKitVersion = @"5.1.6_opensource";
     if (groupUserInfoDataSource) {
         [RCUserInfoCacheManager sharedManager].groupUserInfoEnabled = YES;
     }
+}
+
+-(void)setcurrentChannelId:(NSString *)channelId{
+    self.channelId = channelId;
+}
+
+-(NSString *)getCurrentChannelId{
+    return  self.channelId;
 }
 
 - (void)initWithAppKey:(NSString *)appKey {
@@ -315,7 +324,7 @@ static NSString *const RCIMKitVersion = @"5.1.6_opensource";
             return;
         }
     }
-    
+
     if (!message) {
         return;
     }
@@ -423,11 +432,11 @@ static NSString *const RCIMKitVersion = @"5.1.6_opensource";
                 }
             }
         } else {
-            
+
             [[RCIMClient sharedRCIMClient] getConversationNotificationStatus:message.conversationType
                                                                     targetId:message.targetId
                                                                      success:^(RCConversationNotificationStatus nStatus) {
-                
+
                 if (NOTIFY == nStatus) {
                     BOOL appComsumed = NO;
                     for (id<RCIMReceiveMessageDelegate> delegate in self.receiveMessageDelegates) {
@@ -438,7 +447,7 @@ static NSString *const RCIMKitVersion = @"5.1.6_opensource";
                         }
                     }
                     if (!appComsumed) {
-                        
+
                         if (![message.content isKindOfClass:[RCDiscussionNotificationMessage class]] && !message.messageConfig.disableNotification) {
                             [[RCSystemSoundPlayer defaultPlayer] playSoundByMessage:message
                                                                       completeBlock:^(BOOL complete) {
@@ -449,10 +458,10 @@ static NSString *const RCIMKitVersion = @"5.1.6_opensource";
                         }
                     }
                 }
-                
+
             }
                                                                        error:^(RCErrorCode status){
-                
+
             }];
         }
     }
@@ -489,7 +498,7 @@ static NSString *const RCIMKitVersion = @"5.1.6_opensource";
     [[NSNotificationCenter defaultCenter] postNotificationName:RCKitDispatchRecallMessageNotification
                                                         object:@(message.messageId)
                                                       userInfo:nil];
-    
+
     for (id<RCIMReceiveMessageDelegate> delegate in self.receiveMessageDelegates) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
@@ -497,7 +506,7 @@ static NSString *const RCIMKitVersion = @"5.1.6_opensource";
             [delegate onRCIMMessageRecalled:message.messageId];
         }
 #pragma clang diagnostic pop
-        
+
         if ([delegate respondsToSelector:@selector(messageDidRecall:)]) {
             [delegate messageDidRecall:message];
         }
@@ -689,12 +698,23 @@ static NSString *const RCIMKitVersion = @"5.1.6_opensource";
 
     [self attachCurrentUserInfo:content];
 
-    RCMessage *rcMessage = [[RCIMClient sharedRCIMClient] sendMessage:conversationType
-                                                             targetId:targetId
-                                                              content:content
-                                                          pushContent:pushContent
-                                                             pushData:pushData
-                                                              success:^(long messageId) {
+    //=======【源码修改】================
+    /*
+     RCMessage *rcMessage = [[RCIMClient sharedRCIMClient] sendMessage:conversationType
+                                                              targetId:targetId
+                                                               content:content
+                                                           pushContent:pushContent
+                                                              pushData:pushData
+                                                               success:^(long messageId) {
+     */
+    //=======【源码修改】================
+    RCMessage *rcMessage = [[RCChannelClient sharedChannelManager] sendMessage:conversationType
+                                               targetId:targetId
+                                              channelId:self.channelId
+                                                content:content
+                                            pushContent:pushContent
+                                               pushData:pushData
+    success:^(long messageId) {
         [self postSendMessageSentNotification:targetId
                              conversationType:conversationType
                                     messageId:messageId
@@ -809,13 +829,25 @@ static NSString *const RCIMKitVersion = @"5.1.6_opensource";
     }
     [self attachCurrentUserInfo:content];
 
-    RCMessage *rcMessage = [[RCIMClient sharedRCIMClient] sendDirectionalMessage:conversationType
-    targetId:targetId
-    toUserIdList:userIdList
-    content:content
-    pushContent:pushContent
-    pushData:pushData
-    success:^(long messageId) {
+    //=======【源码修改】================
+    /*
+     RCMessage *rcMessage = [[RCIMClient sharedRCIMClient] sendDirectionalMessage:conversationType
+     targetId:targetId
+     toUserIdList:userIdList
+     content:content
+     pushContent:pushContent
+     pushData:pushData
+     success:^(long messageId) {
+     */
+    //=======【源码修改】================
+    RCMessage *rcMessage = [[RCChannelClient sharedChannelManager] sendDirectionalMessage:conversationType
+                                                          targetId:targetId
+                                                         channelId:self.channelId
+                                                      toUserIdList:userIdList
+                                                           content:content
+                                                       pushContent:pushContent
+                                                          pushData:pushData
+                                                           success:^(long messageId) {
         [self postSendMessageSentNotification:targetId
                              conversationType:conversationType
                                     messageId:messageId
@@ -939,12 +971,17 @@ static NSString *const RCIMKitVersion = @"5.1.6_opensource";
     }
     [self attachCurrentUserInfo:content];
 
-    RCMessage *rcMessage = [[RCIMClient sharedRCIMClient] sendMediaMessage:conversationType
-    targetId:targetId
-    content:content
-    pushContent:pushContent
-    pushData:pushData
-    progress:^(int progress, long messageId) {
+    //=======【源码修改】================
+    /*
+     RCMessage *rcMessage = [[RCIMClient sharedRCIMClient] sendMediaMessage:conversationType
+     targetId:targetId
+     content:content
+     pushContent:pushContent
+     pushData:pushData
+     progress:^(int progress, long messageId) {
+     */
+    //=======【源码修改】================
+    RCMessage *rcMessage = [[RCChannelClient sharedChannelManager] sendMediaMessage:conversationType targetId:targetId channelId:self.channelId content:content pushContent:pushContent pushData:pushData progress:^(int progress, long messageId) {
         NSDictionary *statusDic = @{
             @"targetId" : targetId,
             @"conversationType" : @(conversationType),
@@ -958,43 +995,81 @@ static NSString *const RCIMKitVersion = @"5.1.6_opensource";
         if (progressBlock) {
             progressBlock(progress, messageId);
         }
-    }
-    success:^(long messageId) {
-        [self postSendMessageSentNotification:targetId
-                             conversationType:conversationType
-                                    messageId:messageId
-                                      content:content];
-        [self sendMessageComplete:content status:0];
-        if (successBlock) {
-            successBlock(messageId);
-        }
-    }
-    error:^(RCErrorCode errorCode, long messageId) {
-        [self postSendMessageErrorNotification:targetId
+        } success:^(long messageId) {
+            [self postSendMessageSentNotification:targetId
+                                 conversationType:conversationType
+                                        messageId:messageId
+                                          content:content];
+            [self sendMessageComplete:content status:0];
+            if (successBlock) {
+                successBlock(messageId);
+            }
+        } error:^(RCErrorCode errorCode, long messageId) {
+            [self postSendMessageErrorNotification:targetId
+                                  conversationType:conversationType
+                                         messageId:messageId
+                                             error:errorCode
+                                           content:content];
+            [self sendMessageComplete:content status:errorCode];
+            if (errorBlock) {
+                errorBlock(errorCode, messageId);
+            }
+        } cancel:^(long messageId) {
+            NSDictionary *statusDic = @{
+                @"targetId" : targetId,
+                @"conversationType" : @(conversationType),
+                @"messageId" : @(messageId),
+                @"sentStatus" : @(SentStatus_CANCELED),
+                @"content" : content
+            };
+            [[NSNotificationCenter defaultCenter] postNotificationName:RCKitSendingMessageNotification
+                                                                object:nil
+                                                              userInfo:statusDic];
+            if (cancelBlock) {
+                cancelBlock(messageId);
+            }
+        }];
+    //=======【源码修改】================
+    /*
+     }
+     success:^(long messageId) {
+         [self postSendMessageSentNotification:targetId
                               conversationType:conversationType
                                      messageId:messageId
-                                         error:errorCode
                                        content:content];
-        [self sendMessageComplete:content status:errorCode];
-        if (errorBlock) {
-            errorBlock(errorCode, messageId);
-        }
-    }
-    cancel:^(long messageId) {
-        NSDictionary *statusDic = @{
-            @"targetId" : targetId,
-            @"conversationType" : @(conversationType),
-            @"messageId" : @(messageId),
-            @"sentStatus" : @(SentStatus_CANCELED),
-            @"content" : content
-        };
-        [[NSNotificationCenter defaultCenter] postNotificationName:RCKitSendingMessageNotification
-                                                            object:nil
-                                                          userInfo:statusDic];
-        if (cancelBlock) {
-            cancelBlock(messageId);
-        }
-    }];
+         [self sendMessageComplete:content status:0];
+         if (successBlock) {
+             successBlock(messageId);
+         }
+     }
+     error:^(RCErrorCode errorCode, long messageId) {
+         [self postSendMessageErrorNotification:targetId
+                               conversationType:conversationType
+                                      messageId:messageId
+                                          error:errorCode
+                                        content:content];
+         [self sendMessageComplete:content status:errorCode];
+         if (errorBlock) {
+             errorBlock(errorCode, messageId);
+         }
+     }
+     cancel:^(long messageId) {
+         NSDictionary *statusDic = @{
+             @"targetId" : targetId,
+             @"conversationType" : @(conversationType),
+             @"messageId" : @(messageId),
+             @"sentStatus" : @(SentStatus_CANCELED),
+             @"content" : content
+         };
+         [[NSNotificationCenter defaultCenter] postNotificationName:RCKitSendingMessageNotification
+                                                             object:nil
+                                                           userInfo:statusDic];
+         if (cancelBlock) {
+             cancelBlock(messageId);
+         }
+     }];
+     */
+    //=======【源码修改】================
 
     [[NSNotificationCenter defaultCenter] postNotificationName:RCKitSendingMessageNotification
                                                         object:rcMessage
@@ -1022,7 +1097,7 @@ static NSString *const RCIMKitVersion = @"5.1.6_opensource";
         return nil;
     }
     [self attachCurrentUserInfo:message.content];
-    
+
     RCMessage *rcMessage = [[RCIMClient sharedRCIMClient] sendMediaMessage:message pushContent:pushContent pushData:pushData progress:^(int progress, RCMessage *progressMessage) {
         NSDictionary *statusDic = @{
             @"targetId" : progressMessage.targetId,
@@ -1071,7 +1146,7 @@ static NSString *const RCIMKitVersion = @"5.1.6_opensource";
             cancelBlock(cancelMessage);
         }
     }];
-    
+
     [[NSNotificationCenter defaultCenter] postNotificationName:RCKitSendingMessageNotification
                                                         object:rcMessage
                                                       userInfo:nil];
@@ -1158,16 +1233,19 @@ static NSString *const RCIMKitVersion = @"5.1.6_opensource";
     }
     RCUserInfoUpdateMessage *message = [[RCUserInfoUpdateMessage alloc] initWithUserInfoList:userInfoList];
     [self attachCurrentUserInfo:message];
+    //=======【源码修改】================
+    /*
+     [[RCIMClient sharedRCIMClient] sendMessage:ConversationType_DISCUSSION
+     targetId:discussionId
+     content:message
+     pushContent:nil
+     pushData:nil
+     success:^(long messageId) {
+     */
+    //=======【源码修改】================
+    [[RCChannelClient sharedChannelManager] sendMessage:ConversationType_DISCUSSION targetId:discussionId channelId:self.channelId content:message pushContent:nil pushData:nil success:^(long messageId) {
 
-    [[RCIMClient sharedRCIMClient] sendMessage:ConversationType_DISCUSSION
-        targetId:discussionId
-        content:message
-        pushContent:nil
-        pushData:nil
-        success:^(long messageId) {
-
-        }
-        error:^(RCErrorCode nErrorCode, long messageId){
+        } error:^(RCErrorCode nErrorCode, long messageId) {
 
         }];
 }

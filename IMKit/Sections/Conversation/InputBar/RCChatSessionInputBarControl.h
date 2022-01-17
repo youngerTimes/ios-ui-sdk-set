@@ -278,7 +278,7 @@
 
  @param userInfo    被@的用户信息
  */
-- (void)addMentionedUser:(RCUserInfo *)userInfo;
+- (void)addMentionedUser:(RCUserInfo *)userInfo Symbol:(Boolean)symbolRequset;
 
 /*!
  打开系统相册，选择图片
@@ -320,7 +320,7 @@
 
 /*!
  按照 tag 触发扩展中某个 pluginItem 的事件
- 
+
  @param functionTag 某个 pluginItem 的 tag
 */
 - (void)openDynamicFunction:(NSInteger)functionTag;

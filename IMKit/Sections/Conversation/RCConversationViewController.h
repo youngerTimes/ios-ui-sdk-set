@@ -58,6 +58,8 @@ typedef NS_ENUM(NSUInteger, RCCustomerServiceStatus) {
  */
 - (id)initWithConversationType:(RCConversationType)conversationType targetId:(NSString *)targetId;
 
+- (id)initWithConversationType:(RCConversationType)conversationType targetId:(NSString *)targetId channelId:(NSString *)channelId;
+
 #pragma mark - 会话属性
 
 /*!
@@ -69,6 +71,8 @@ typedef NS_ENUM(NSUInteger, RCCustomerServiceStatus) {
  目标会话ID
  */
 @property (nonatomic, copy) NSString *targetId;
+
+@property (nonatomic, copy,readonly) NSString *channelId;
 
 #pragma mark - 会话页面属性
 /**

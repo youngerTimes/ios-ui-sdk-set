@@ -114,7 +114,7 @@ static int rc_currentSelectIndexPage;
         tabbarViewFrame.size.width = frame.size.width;
         self.tabbarView.frame = tabbarViewFrame;
     }
-    
+
     // 配置本页视图动态变化 ========================= 结束//
 
     [self generateDefaultLayoutParameters];
@@ -557,7 +557,7 @@ static int rc_currentSelectIndexPage;
 - (RCEmojiTabView *)tabbarView{
     if (!_tabbarView) {
         _tabbarView = [[RCEmojiTabView alloc] initWithFrame:CGRectMake(0, self.frame.size.height - 38, self.frame.size.width, 38)];
-        _tabbarView.backgroundColor = RCDYCOLOR(0xffffff, 0x1a1a1a);
+        _tabbarView.backgroundColor = RCDYCOLOR(0xf5f6f9, 0x1c1c1c);
         _tabbarView.delegate = self;
     }
     return _tabbarView;

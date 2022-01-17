@@ -92,7 +92,7 @@ extern NSString *const RCKitDispatchDownloadMediaNotification;
 @property (nonatomic, copy) NSString *navigationTitle;
 @property (nonatomic, strong) NSArray<UIBarButtonItem *> *leftBarButtonItems;
 @property (nonatomic, strong) NSArray<UIBarButtonItem *> *rightBarButtonItems;
-
+@property (nonatomic, copy)NSString *channelId;
 @end
 
 static NSString *const rcUnknownMessageCellIndentifier = @"rcUnknownMessageCellIndentifier";
@@ -105,6 +105,19 @@ static NSString *const rcUnknownMessageCellIndentifier = @"rcUnknownMessageCellI
     if (self) {
         self.conversationType = conversationType;
         self.targetId = targetId;
+        [[RCIM sharedRCIM] setcurrentChannelId:@""];
+    }
+    return self;
+}
+
+- (id)initWithConversationType:(RCConversationType)conversationType targetId:(NSString *)targetId channelId:(NSString *)channelId {
+    self = [super init];
+    if (self) {
+        self.conversationType = conversationType;
+        self.targetId = targetId;
+        self.channelId = channelId;
+
+        [[RCIM sharedRCIM] setcurrentChannelId:channelId];
     }
     return self;
 }
@@ -528,6 +541,8 @@ static NSString *const rcUnknownMessageCellIndentifier = @"rcUnknownMessageCellI
 
 - (void)didReceiveMessageNotification:(NSNotification *)notification {
     RCMessage *rcMessage = notification.object;
+    //防止消息串线
+    if (self.channelId != rcMessage.channelId) {return;}
     NSDictionary *leftDic = notification.userInfo;
     [self.dataSource didReceiveMessageNotification:rcMessage leftDic:leftDic];
 }
@@ -825,6 +840,7 @@ static NSString *const rcUnknownMessageCellIndentifier = @"rcUnknownMessageCellI
     RCMessageModel *model = [self.conversationDataRepository objectAtIndex:indexPath.row];
 
     model = [self.dataSource setModelIsDisplayNickName:model];
+    model.channelId = self.channelId;
 
     RCMessageContent *messageContent = model.content;
     RCMessageBaseCell *cell = nil;
@@ -2142,7 +2158,7 @@ static NSString *const rcUnknownMessageCellIndentifier = @"rcUnknownMessageCellI
         return;
     }
 
-    [self.chatSessionInputBarControl addMentionedUser:[self getSelectingUserInfo:userId]];
+    [self.chatSessionInputBarControl addMentionedUser:[self getSelectingUserInfo:userId] Symbol:YES];
     [self.chatSessionInputBarControl.inputTextView becomeFirstResponder];
 }
 
