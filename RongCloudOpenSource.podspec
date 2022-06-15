@@ -17,7 +17,7 @@ Pod::Spec.new do |s|
   s.author             = { "qixinbing" => "https://www.rongcloud.cn/" }
   s.social_media_url   = "https://www.rongcloud.cn/"
   s.platform     = :ios, "8.0"
-  s.source           = { :git => 'https://github.com/rongcloud/ios-ui-sdk-set.git', :tag => s.version.to_s }
+  s.source           = { :git => 'https://github.com/youngerTimes/ios-ui-sdk-set.git', :tag => s.version.to_s }
   s.requires_arc = true
   s.static_framework = true
   s.pod_target_xcconfig = {
