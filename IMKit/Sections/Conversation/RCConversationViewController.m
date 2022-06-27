@@ -1721,6 +1721,46 @@ static NSString *const rcUnknownMessageCellIndentifier = @"rcUnknownMessageCellI
     }
 }
 
+//收藏
+-(void)onCollectMessage:(id)sender{
+    self.chatSessionInputBarControl.inputTextView.disableActionMenu = NO;
+    RCMessageModel *model = self.currentSelectedModel;
+    [self didOnCollectMessage:model];
+}
+
+-(void)onForwardMessage:(id)sender{
+    self.chatSessionInputBarControl.inputTextView.disableActionMenu = NO;
+    RCMessageModel *model = self.currentSelectedModel;
+    [self didOnForwardMessage:model];
+}
+
+-(void)onSingleSelectMessageCell:(id)sender{
+    __weak typeof(self) weakSelf = self;
+    self.chatSessionInputBarControl.inputTextView.disableActionMenu = NO;
+    RCMessageModel *model = self.currentSelectedModel;
+    [self didOnForwardMessage:model];
+//    [self forwardMessage:0
+//               completed:^(NSArray<RCConversation *> *conversationList) {
+//        if (conversationList) {
+//            [[RCForwardManager sharedInstance] doForwardMessageList:@[model]
+//                                                   conversationList:conversationList
+//                                                          isCombine:NO
+//                                            forwardConversationType:weakSelf.conversationType
+//                                                          completed:^(BOOL success){
+//            }];
+//            [weakSelf forwardMessageEnd];
+//        }
+//    }];
+}
+
+-(void)didOnCollectMessage:(RCMessageModel*)messageModel{
+
+}
+
+-(void)didOnForwardMessage:(RCMessageModel*)messageModel{
+
+}
+
 - (void)deleteOldMessageNotificationMessageIfNeed {
     //如果“以上是历史消息(RCOldMessageNotificationMessage)”上面或者下面没有消息了，把RCOldMessageNotificationMessage也删除
     if (self.conversationDataRepository.count > 0) {
@@ -2049,13 +2089,20 @@ static NSString *const rcUnknownMessageCellIndentifier = @"rcUnknownMessageCellI
     UIMenuItem *recallItem =
         [[UIMenuItem alloc] initWithTitle:RCLocalizedString(@"Recall")
                                    action:@selector(onRecallMessage:)];
+    UIMenuItem *collectItem =
+        [[UIMenuItem alloc] initWithTitle:@"收藏"
+                                   action:@selector(onCollectMessage:)];
+
+    UIMenuItem *forwardItem =
+        [[UIMenuItem alloc] initWithTitle:@"转发"
+                                   action:@selector(onForwardMessage:)];
     UIMenuItem *multiSelectItem =
         [[UIMenuItem alloc] initWithTitle:RCLocalizedString(@"MessageTapMore")
                                    action:@selector(onMultiSelectMessageCell:)];
 
-    UIMenuItem *referItem =
-        [[UIMenuItem alloc] initWithTitle:RCLocalizedString(@"Reference")
-                                   action:@selector(onReferenceMessageCell:)];
+//    UIMenuItem *referItem =
+//        [[UIMenuItem alloc] initWithTitle:RCLocalizedString(@"Reference")
+//                                   action:@selector(onReferenceMessageCell:)];
     NSMutableArray *items = @[].mutableCopy;
     if (model.content.destructDuration > 0) {
         [items addObject:deleteItem];
@@ -2066,17 +2113,19 @@ static NSString *const rcUnknownMessageCellIndentifier = @"rcUnknownMessageCellI
         if ([model.content isMemberOfClass:[RCTextMessage class]] ||
             [model.content isMemberOfClass:[RCReferenceMessage class]]) {
             [items addObject:copyItem];
+            [items addObject:collectItem];
         }
         [items addObject:deleteItem];
         if ([self.util canRecallMessageOfModel:model]) {
             [items addObject:recallItem];
         }
-        if ([self.util canReferenceMessage:model]) {
-            [items addObject:referItem];
-        }        
+//        if ([self.util canReferenceMessage:model]) {
+//            [items addObject:referItem];
+//        }
     }
     if (self.conversationType != ConversationType_SYSTEM) {
         [items addObject:multiSelectItem];
+        [items addObject:forwardItem];
     }
     return items.copy;
 }

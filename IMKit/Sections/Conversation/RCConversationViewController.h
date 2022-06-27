@@ -173,6 +173,10 @@ typedef NS_ENUM(NSUInteger, RCCustomerServiceStatus) {
  */
 @property (nonatomic, strong) UILabel *unReadNewMessageLabel;
 
+-(void)didOnCollectMessage:(RCMessageModel*)messageModel;
+
+-(void)didOnForwardMessage:(RCMessageModel*)messageModel;
+
 #pragma mark - 输入工具栏
 
 /*!

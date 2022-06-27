@@ -233,7 +233,7 @@
 "RecommendedToYou"="recommended %@ to you.";
 "Person"="Member";
 "SelectContact"="Select Contacts";
-"MessageTapMore"="Select...";
+"MessageTapMore"="More";
 
 "receive_new_message"="You got a new message";
 "push_to_talk"="Push to Talk";
