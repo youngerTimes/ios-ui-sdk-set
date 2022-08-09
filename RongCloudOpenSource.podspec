@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
 
 
   s.name         = "RongCloudOpenSource"
-  s.version      = "5.1.1"
+  s.version      = "5.1.6"
   s.summary      = "RongCloud UI SDK SourceCode."
 
 
@@ -30,20 +30,20 @@ Pod::Spec.new do |s|
     kit.source_files = 'IMKit/RongIMKit.h','IMKit/**/*.{h,m,c}'
     kit.private_header_files = 'IMKit/Utility/Extension/*.h'
     kit.frameworks = "AssetsLibrary", "MapKit", "ImageIO", "CoreLocation", "SystemConfiguration", "QuartzCore", "OpenGLES", "CoreVideo", "CoreTelephony", "CoreMedia", "CoreAudio", "CFNetwork", "AudioToolbox", "AVFoundation", "UIKit", "CoreGraphics", "SafariServices"
-    kit.dependency 'RongCloudIM/IMLib','5.1.1'
+    kit.dependency 'RongCloudIM/IMLib','5.1.4'
   end
 
   s.subspec 'RongSticker' do |rs|
-  	rs.resources = "Resources/RongSticker.bundle"
+      rs.resources = "Resources/RongSticker.bundle"
     rs.source_files = 'Sticker/RongSticker.h','Sticker/**/*.{h,m,c}'
     rs.private_header_files = 'Sticker/Extension/*.h','Sticker/Utilities/RCUnzip.h'
-    rs.dependency 'RongCloudOpenSource/IMKit'
+    rs.dependency 'RongCloudOpenSource/IMKit','5.1.3.6'
   end
 
   s.subspec 'Sight' do |st|
     st.source_files = 'Sight/RongSight.h','Sight/**/*.{h,m}'
     st.private_header_files = 'Sight/RCDownloadHelper.h'
-    st.dependency 'RongCloudOpenSource/IMKit'
+    st.dependency 'RongCloudOpenSource/IMKit','5.1.3.6'
   end
 
   s.subspec 'IFly' do |fly|
@@ -51,22 +51,22 @@ Pod::Spec.new do |s|
     fly.frameworks = "AddressBook", "SystemConfiguration", "CoreTelephony", "CoreServices", "Contacts"
     fly.resources = "Resources/RongCloudiFly.bundle"
     fly.source_files = 'iFlyKit/RongiFlyKit.h','iFlyKit/**/*.{h,m}'
-    fly.dependency 'RongCloudOpenSource/IMKit'
+    fly.dependency 'RongCloudOpenSource/IMKit','5.1.3.6'
     fly.vendored_frameworks = "iFlyKit/Engine/iflyMSC.framework"
   end
 
   s.subspec 'ContactCard' do |cc|
     cc.source_files = 'ContactCard/RongContactCard.h','ContactCard/**/*.{h,m,c}'
     cc.private_header_files = 'ContactCard/Header/*.h'
-    cc.dependency 'RongCloudOpenSource/IMKit'
+    cc.dependency 'RongCloudOpenSource/IMKit','5.1.3.6'
   end
 
   s.subspec 'RongCallKit' do |ck|
     ck.source_files = 'CallKit/RongCallKit.h','CallKit/**/*.{h,m,mm}'
     ck.private_header_files = 'CallKit/Header/*.h'
     ck.resources = "Resources/RongCallKit.bundle"
-    ck.dependency 'RongCloudOpenSource/IMKit'
-    ck.dependency 'RongCloudRTC/RongCallLib'
+    ck.dependency 'RongCloudOpenSource/IMKit','5.1.3.6'
+    ck.dependency 'RongCloudRTC/RongCallLib','5.1.13'
   end
 
 end
