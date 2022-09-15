@@ -2127,6 +2127,12 @@ static NSString *const rcUnknownMessageCellIndentifier = @"rcUnknownMessageCellI
         [items addObject:multiSelectItem];
         [items addObject:forwardItem];
     }
+
+    if ([model.content isMemberOfClass:[RCImageMessage class]]) {
+        [items addObject:collectItem];
+    }
+
+
     return items.copy;
 }
 

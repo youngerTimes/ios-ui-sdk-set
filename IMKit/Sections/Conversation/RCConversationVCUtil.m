@@ -218,18 +218,20 @@
 }
 
 - (BOOL)canRecallMessageOfModel:(RCMessageModel *)model {
-    long long cTime = [[NSDate date] timeIntervalSince1970] * 1000;
-    long long ServerTime = cTime - [[RCIMClient sharedRCIMClient] getDeltaTime];
-    long long interval = ServerTime - model.sentTime > 0 ? ServerTime - model.sentTime : model.sentTime - ServerTime;
-    return (interval <= RCKitConfigCenter.message.maxRecallDuration * 1000 && model.messageDirection == MessageDirection_SEND &&
-            RCKitConfigCenter.message.enableMessageRecall && model.sentStatus != SentStatus_SENDING &&
-            model.sentStatus != SentStatus_FAILED && model.sentStatus != SentStatus_CANCELED &&
-            (model.conversationType == ConversationType_PRIVATE || model.conversationType == ConversationType_GROUP ||
-             model.conversationType == ConversationType_DISCUSSION) &&
-            ![model.content isKindOfClass:NSClassFromString(@"JrmfRedPacketMessage")] &&
-            ![model.content isKindOfClass:NSClassFromString(@"RCCallSummaryMessage")]
-            &&
-            ![model.content isKindOfClass:NSClassFromString(@"RCRealTimeLocationStartMessage")]);
+    //撤回不判断时间
+    return YES;
+//    long long cTime = [[NSDate date] timeIntervalSince1970] * 1000;
+//    long long ServerTime = cTime - [[RCIMClient sharedRCIMClient] getDeltaTime];
+//    long long interval = ServerTime - model.sentTime > 0 ? ServerTime - model.sentTime : model.sentTime - ServerTime;
+//    return (interval <= RCKitConfigCenter.message.maxRecallDuration * 1000 && model.messageDirection == MessageDirection_SEND &&
+//            RCKitConfigCenter.message.enableMessageRecall && model.sentStatus != SentStatus_SENDING &&
+//            model.sentStatus != SentStatus_FAILED && model.sentStatus != SentStatus_CANCELED &&
+//            (model.conversationType == ConversationType_PRIVATE || model.conversationType == ConversationType_GROUP ||
+//             model.conversationType == ConversationType_DISCUSSION) &&
+//            ![model.content isKindOfClass:NSClassFromString(@"JrmfRedPacketMessage")] &&
+//            ![model.content isKindOfClass:NSClassFromString(@"RCCallSummaryMessage")]
+//            &&
+//            ![model.content isKindOfClass:NSClassFromString(@"RCRealTimeLocationStartMessage")]);
 }
 
 

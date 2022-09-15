@@ -195,17 +195,19 @@
 
 // 判断是否可以重新编辑，可编辑时间从 RCIM 中的 reeditDuration 获取
 - (BOOL)canReeditMessage {
-    RCRecallNotificationMessage *recallMessage = (RCRecallNotificationMessage *)self.model.content;
-    long long cTime = [[NSDate date] timeIntervalSince1970] * 1000;
-    long long interval = cTime - recallMessage.recallActionTime;
-    BOOL canReedit = NO;
-    NSUInteger reeditDuration = RCKitConfigCenter.message.reeditDuration * 1000;
-    if (reeditDuration > 0 && interval > 0 && interval <= reeditDuration &&
-        (self.messageDirection == MessageDirection_SEND)) {
-        canReedit = YES;
-        [[RCReeditMessageManager defaultManager] addReeditDuration:interval messageId:self.model.messageId];
-    }
-    return canReedit;
+    //不要重新编辑功能
+    return NO;
+//    RCRecallNotificationMessage *recallMessage = (RCRecallNotificationMessage *)self.model.content;
+//    long long cTime = [[NSDate date] timeIntervalSince1970] * 1000;
+//    long long interval = cTime - recallMessage.recallActionTime;
+//    BOOL canReedit = NO;
+//    NSUInteger reeditDuration = RCKitConfigCenter.message.reeditDuration * 1000;
+//    if (reeditDuration > 0 && interval > 0 && interval <= reeditDuration &&
+//        (self.messageDirection == MessageDirection_SEND)) {
+//        canReedit = YES;
+//        [[RCReeditMessageManager defaultManager] addReeditDuration:interval messageId:self.model.messageId];
+//    }
+//    return canReedit;
 }
 
 #pragma mark - Getter
